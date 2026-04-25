@@ -7,5 +7,4 @@ import mdx from "@astrojs/mdx";
 export default defineConfig({
   integrations: [mdx()],
   site: "https://mokuzai-cell.github.io",
-  base: "blog",
 });
