@@ -1,11 +1,72 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { useLink } from '../utils/link';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const baseURL="/post/";
+
+const allPosts = await getCollection("blog");
+function dateToStr(date:Date){
+	let y=date.getFullYear();
+	let m=date.getMonth()+1;
+	let d=date.getDay();
+	return y===new Date().getFullYear()?`${m}月${d}日`:`${y}年${m}月${d}日`;
+}
 ---
 
 <Layout>
-	<Welcome />
+	<div class="main">
+	<div class="hero">
+		<h1>Mokusei Blog</h1>
+		<hr>
+	</div>
+	<div class="posts">
+		<h2 class="subtitle">Blog</h2>
+		{allPosts.map(value=>(<a href={useLink(baseURL+value.id)} class="post">
+			<p class="post__date">{dateToStr(value.data.created)}</p>
+			<h3 class="post__title">{value.data.title}</h3>
+			<p class="post__description">{value.data.description}</p>
+			</a>))}
+	</div>
+	</div>
 </Layout>
+<style lang="scss">
+	.main{
+		width:100%;
+	}
+	.hero{
+		padding:8px 24px;
+		h1{
+			font-size:40px;	
+		}
+	}
+	.subtitle{
+		font-size:32px;
+		color:#074770;
+		padding-left:32px;
+	}
+	.post{
+		display: block;
+		padding: 8px;
+		border-bottom: 1.5px solid gray;
+		margin-left: 32px;
+		margin-right: 60px;
+		text-decoration: none;
+		color:inherit;
+		&>*{
+			margin:0;
+		}
+		&__title{
+			font-size:20px;
+		}
+		&__date{
+			font-size: 14px;
+			color: gray;
+			padding-left: 1ch;;
+		}
+		&__description{
+			font-size:16px;
+			padding-left:1ch;
+		}
+	}
+</style>
